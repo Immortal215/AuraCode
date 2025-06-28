@@ -4,9 +4,8 @@ import GoogleSignIn
 import GoogleSignInSwift
 
 struct ContentView: View {
-    @State var code = ""
-    @State var textSelection : TextSelection? = nil
-    @AppStorage("aura") var aura = 0
+    @State var code = "a = 32"
+    @AppStorage("aura") var aura = 23
     @AppStorage("searchText") var searchText: String = ""
     @AppStorage("userEmail") var userEmail: String?
     @AppStorage("userName") var userName: String?
@@ -110,7 +109,7 @@ struct ContentView: View {
                         }
                         Divider()
                         
-                        CodeEditorView()
+                        CodeEditorView(code: $code)
                             .padding()
                             .padding(.top, 50)
                             .frame(width: geo.size.width * 2/3)
@@ -119,7 +118,7 @@ struct ContentView: View {
                     
                     VStack {
                         HStack {
-                            ProgressBarView()
+                            ProgressBarView(aura: aura)
                             
                             Text(viewModel.userEmail ?? "")
                                 .padding()

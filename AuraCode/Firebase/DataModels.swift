@@ -7,14 +7,11 @@ import GoogleSignInSwift
 import SwiftUI
 import FirebaseFirestore
 
-struct Club: Codable, Equatable, Hashable {
-
-}
-
-struct Personal: Codable {
+struct Personal: Codable, Equatable, Hashable {
     var userID: String
     var aura: Int
-    var fcmToken: String?
+    var learningStyle: String
+    var lessonSizing: String
 }
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
@@ -59,22 +56,25 @@ final class AuthenticationViewModel: ObservableObject {
                 return
             }
             if let document = document, !document.exists {
-                let newUser: [String: Any] = [
-                    "userID": userID,
-                    "aura": 0
-                ]
-                userRef.setData(newUser) { error in
-                    if let error = error {
-                        print("Error creating user document: \(error)")
-                    } else {
-                        print("User document created successfully")
+                let newUser = Personal(userID: userID, aura: 0, learningStyle: "visual", lessonSizing: "microlearn")
+                do {
+                    let data = try Firestore.Encoder().encode(newUser)
+                    userRef.setData(data) { error in
+                        if let error = error {
+                            print("Error creating user document: \(error)")
+                        } else {
+                            print("User document created successfully")
+                        }
                     }
+                } catch {
+                    print("Failed to encode user data: \(error)")
                 }
             } else {
                 print("User document already exists")
             }
         }
     }
+
     
     func signInAsGuest() {
         self.userName = "Guest Account"

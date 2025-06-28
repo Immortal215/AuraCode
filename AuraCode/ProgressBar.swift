@@ -3,6 +3,7 @@ import SwiftUI
 
 struct ProgressBarView: View {
     @State var progressBarSize : CGFloat = 1
+    var aura : Int
     var body: some View {
         HStack {
             ZStack {
@@ -28,7 +29,13 @@ struct ProgressBarView: View {
                 
                 HStack {
                     Spacer()
+                    
+                    Text("\(aura)")
+                        .monospaced()
+                        .foregroundStyle(.black)
+            
                     VStack {
+                        
                         Text("🔥")
                             .padding(.horizontal)
                         if progressBarSize != 1 {
