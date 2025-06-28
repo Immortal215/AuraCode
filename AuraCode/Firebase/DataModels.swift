@@ -10,6 +10,7 @@ import FirebaseFirestore
 struct Personal: Codable, Equatable, Hashable {
     var userID: String
     var aura: Int
+    var name: String
     var learningStyle: String
     var lessonSizing: String
 }
@@ -56,7 +57,7 @@ final class AuthenticationViewModel: ObservableObject {
                 return
             }
             if let document = document, !document.exists {
-                let newUser = Personal(userID: userID, aura: 0, learningStyle: "visual", lessonSizing: "microlearn")
+                let newUser = Personal(userID: userID, aura: 0, name: self.userName ?? "Anonymous", learningStyle: "visual", lessonSizing: "microlearn")
                 do {
                     let data = try Firestore.Encoder().encode(newUser)
                     userRef.setData(data) { error in

@@ -63,6 +63,10 @@ struct CodeEditorView: View {
                                 .font(.system(.body, design: .monospaced))
                         } else if !playing {
                             TypewriterText(fullText: output, speed: 20)
+                        } else if playing {
+                            Text("Running...")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .font(.system(.body, design: .monospaced))
                         }
                     }
                     .padding(8)
