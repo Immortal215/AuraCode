@@ -10,10 +10,11 @@ import FirebaseFirestore
 struct Personal: Codable, Equatable, Hashable {
     var userID: String
     var aura: Int
-    var name: String
     var learningStyle: String
     var lessonSizing: String
+    var grade: String
 }
+
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
     @AppStorage("userEmail") var userEmail: String?
@@ -22,7 +23,7 @@ final class AuthenticationViewModel: ObservableObject {
     @AppStorage("isGuestUser") var isGuestUser = true
     @AppStorage("userType") var userType: String?
     @AppStorage("uid") var uid: String?
-
+    
     init() {
         userEmail = nil
         userName = nil
@@ -31,51 +32,63 @@ final class AuthenticationViewModel: ObservableObject {
         userType = nil
         uid = nil
     }
-
+    
     func loadCurrentUser() {
         guard let user = Auth.auth().currentUser else { return }
-
+        
         userEmail = user.email
         userName = user.displayName
         userImage = user.photoURL?.absoluteString
         isGuestUser = false
         uid = user.uid
     }
-
-
-    func createUserNodeIfNeeded() {
+    
+    
+    func checkUserDocument(completion: @escaping (Bool) -> Void) {
         guard let userID = Auth.auth().currentUser?.uid else {
-            print("User is not authenticated")
+            completion(false)
             return
         }
         
         let db = Firestore.firestore()
         let userRef = db.collection("users").document(userID)
-        userRef.getDocument { (document, error) in
-            if let error = error {
-                print("Error checking user document: \(error)")
-                return
-            }
-            if let document = document, !document.exists {
-                let newUser = Personal(userID: userID, aura: 0, name: self.userName ?? "Anonymous", learningStyle: "visual", lessonSizing: "microlearn")
-                do {
-                    let data = try Firestore.Encoder().encode(newUser)
-                    userRef.setData(data) { error in
-                        if let error = error {
-                            print("Error creating user document: \(error)")
-                        } else {
-                            print("User document created successfully")
-                        }
-                    }
-                } catch {
-                    print("Failed to encode user data: \(error)")
-                }
+        
+        userRef.getDocument { document, error in
+            if let document = document, document.exists {
+                completion(false)
             } else {
-                print("User document already exists")
+                completion(true)
             }
         }
     }
-
+    
+    func createUserNode(grade: String, learningStyle: String, lessonSizing: String) {
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        
+        let newUser = Personal(
+            userID: userID,
+            aura: 0,
+            learningStyle: learningStyle,
+            lessonSizing: lessonSizing,
+            grade: grade
+        )
+        
+        do {
+            let data = try Firestore.Encoder().encode(newUser)
+            let userRef = Firestore.firestore().collection("users").document(userID)
+            userRef.setData(data) { error in
+                if let error = error {
+                    print("Error creating user document: \(error)")
+                } else {
+                    print("User onboarding complete and document created.")
+                }
+            }
+        } catch {
+            print("Encoding error: \(error)")
+        }
+    }
+    
+    
     
     func signInAsGuest() {
         self.userName = "Guest Account"
@@ -91,7 +104,7 @@ final class AuthenticationViewModel: ObservableObject {
     }
     
     @MainActor
-    func signInGoogle() async throws {
+    func signInGoogleAndCheckIfNew() async throws -> Bool {
         guard let presentingWindow = getPresentingWindow() else {
             throw NSError(domain: "WindowError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No main window found"])
         }
@@ -117,11 +130,11 @@ final class AuthenticationViewModel: ObservableObject {
         self.userImage = gidSignInResult.user.profile?.imageURL(withDimension: 200)?.absoluteString
         self.isGuestUser = false
         self.uid = authResult.uid
+        self.userType = "Basic"
         
-        self.createUserNodeIfNeeded()
-        
-        if let email = authResult.email {
-            self.userType = "Basic"
-        }
+        let userID = authResult.uid
+        let db = Firestore.firestore()
+        let doc = try await db.collection("users").document(userID).getDocument()
+        return !doc.exists
     }
 }

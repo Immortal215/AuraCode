@@ -15,6 +15,8 @@ struct ContentView: View {
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @State var showSignInView = true
     var viewModel = AuthenticationViewModel()
+    @State var showOnboarding = false
+    @State var needsOnboarding = false
     
     var body: some View {
         NavigationStack {
@@ -46,9 +48,13 @@ struct ContentView: View {
                                 GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .dark, style: .wide, state: .normal)) {
                                     Task {
                                         do {
-                                            try await viewModel.signInGoogle()
-                                            withAnimation(.smooth) {
-                                                showSignInView = false
+                                            let needsOnboarding = try await viewModel.signInGoogleAndCheckIfNew()
+                                            if needsOnboarding {
+                                                showOnboarding = true
+                                            } else {
+                                                withAnimation(.smooth) {
+                                                    showSignInView = false
+                                                }
                                             }
                                         } catch {
                                             print(error)
@@ -186,6 +192,20 @@ struct ContentView: View {
                     }
                 }
             }
+        }
+        .sheet(isPresented: $showOnboarding) {
+            OnboardingView { grade, learningStyle, lessonSize in
+                viewModel.createUserNode(
+                    grade: grade,
+                    learningStyle: learningStyle,
+                    lessonSizing: lessonSize
+                )
+                showOnboarding = false
+                withAnimation(.smooth) {
+                    showSignInView = false
+                }
+            }
+            .frame(minWidth: 300, maxHeight: 400)
         }
         .onAppear {
             if viewModel.isGuestUser {
