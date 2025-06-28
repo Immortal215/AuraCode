@@ -18,7 +18,7 @@ struct ChunkButton: View {
             RoundedRectangle(cornerRadius: 8)
                 .fill(color)
                 .stroke(.black, lineWidth: 3)
-                .offset(x: 6, y: 6)
+                .offset(y: 6)
                 .opacity(0.5)
                 .saturation(0.6)
             
@@ -27,7 +27,7 @@ struct ChunkButton: View {
                 .fill(color)
                 .stroke(.black, lineWidth: 3)
                 .saturation(hovering ? 0.6 : 0.3)
-                .offset(x: hovering ? 5 : 0, y: hovering ? 5 : 0)
+                .offset( y: hovering ? 5 : 0)
                 
             
             ZStack {
@@ -42,7 +42,7 @@ struct ChunkButton: View {
                 }
             }
             .padding(8)
-            .offset(x: hovering ? 5 : 0, y: hovering ? 5 : 0)
+            .offset(y: hovering ? 5 : 0)
             
         }
         .fixedSize()

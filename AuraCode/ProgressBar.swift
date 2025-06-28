@@ -6,14 +6,23 @@ struct ProgressBarView: View {
     var body: some View {
         HStack {
             ZStack {
+               
                 RoundedRectangle(cornerRadius: 15)
                     .saturation(0.2)
                     .opacity(0.8)
                 
+                RoundedRectangle(cornerRadius: 15)
+                    .stroke(lineWidth: 3)
+                    .foregroundStyle(.black)
                 HStack {
                     RoundedRectangle(cornerRadius: 15)
                         .frame(width: 100)
                         .saturation(0.6)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 15)
+                                .stroke(lineWidth: 3)
+                                .foregroundStyle(.black)
+                        }
                     Spacer()
                 }
                 
