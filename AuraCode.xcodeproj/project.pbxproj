@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		71848EA12E0F9B86003CA797 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 71848EA02E0F9B86003CA797 /* Shimmer */; };
+		71848EA42E0F9BD2003CA797 /* SwiftUIX in Frameworks */ = {isa = PBXBuildFile; productRef = 71848EA32E0F9BD2003CA797 /* SwiftUIX */; };
+		71848EA72E0F9C42003CA797 /* CodeEditorView in Frameworks */ = {isa = PBXBuildFile; productRef = 71848EA62E0F9C42003CA797 /* CodeEditorView */; };
+		71848EA92E0F9C42003CA797 /* LanguageSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 71848EA82E0F9C42003CA797 /* LanguageSupport */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		712614142E0F4A1B000A6E90 /* AuraCode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuraCode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +30,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71848EA92E0F9C42003CA797 /* LanguageSupport in Frameworks */,
+				71848EA72E0F9C42003CA797 /* CodeEditorView in Frameworks */,
+				71848EA12E0F9B86003CA797 /* Shimmer in Frameworks */,
+				71848EA42E0F9BD2003CA797 /* SwiftUIX in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +76,10 @@
 			);
 			name = AuraCode;
 			packageProductDependencies = (
+				71848EA02E0F9B86003CA797 /* Shimmer */,
+				71848EA32E0F9BD2003CA797 /* SwiftUIX */,
+				71848EA62E0F9C42003CA797 /* CodeEditorView */,
+				71848EA82E0F9C42003CA797 /* LanguageSupport */,
 			);
 			productName = AuraCode;
 			productReference = 712614142E0F4A1B000A6E90 /* AuraCode.app */;
@@ -94,6 +109,11 @@
 			);
 			mainGroup = 7126140B2E0F4A1B000A6E90;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				71848E9F2E0F9B86003CA797 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
+				71848EA22E0F9BD2003CA797 /* XCRemoteSwiftPackageReference "SwiftUIX" */,
+				71848EA52E0F9C42003CA797 /* XCRemoteSwiftPackageReference "CodeEditorView" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 712614152E0F4A1B000A6E90 /* Products */;
 			projectDirPath = "";
@@ -263,10 +283,10 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Sharul.AuraCode;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -276,7 +296,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				XROS_DEPLOYMENT_TARGET = 2.5;
+				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Debug;
 		};
@@ -302,10 +322,10 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Sharul.AuraCode;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -315,7 +335,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				XROS_DEPLOYMENT_TARGET = 2.5;
+				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Release;
 		};
@@ -341,6 +361,56 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		71848E9F2E0F9B86003CA797 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/markiv/SwiftUI-Shimmer";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.1;
+			};
+		};
+		71848EA22E0F9BD2003CA797 /* XCRemoteSwiftPackageReference "SwiftUIX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftUIX/SwiftUIX";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.4;
+			};
+		};
+		71848EA52E0F9C42003CA797 /* XCRemoteSwiftPackageReference "CodeEditorView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mchakravarty/CodeEditorView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.15.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		71848EA02E0F9B86003CA797 /* Shimmer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 71848E9F2E0F9B86003CA797 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
+			productName = Shimmer;
+		};
+		71848EA32E0F9BD2003CA797 /* SwiftUIX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 71848EA22E0F9BD2003CA797 /* XCRemoteSwiftPackageReference "SwiftUIX" */;
+			productName = SwiftUIX;
+		};
+		71848EA62E0F9C42003CA797 /* CodeEditorView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 71848EA52E0F9C42003CA797 /* XCRemoteSwiftPackageReference "CodeEditorView" */;
+			productName = CodeEditorView;
+		};
+		71848EA82E0F9C42003CA797 /* LanguageSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 71848EA52E0F9C42003CA797 /* XCRemoteSwiftPackageReference "CodeEditorView" */;
+			productName = LanguageSupport;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7126140C2E0F4A1B000A6E90 /* Project object */;
 }

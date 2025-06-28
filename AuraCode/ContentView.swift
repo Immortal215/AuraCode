@@ -1,21 +1,45 @@
-//
-//  ContentView.swift
-//  AuraCode
-//
-//  Created by Sharul Shah on 6/27/25.
-//
-
 import SwiftUI
+import CodeEditorView
+import LanguageSupport
 
 struct ContentView: View {
+    @State var code = ""
+    @State var textSelection : TextSelection? = nil
+    @AppStorage("aura") var aura = 0 
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        GeometryReader { geo in
+            ZStack {
+
+                HStack {
+                    ScrollView {
+                        HStack {
+                            ChunkButton(color: .purple, symbol: Image(systemName: "square.on.square"))
+                            ChunkButton(color: .purple, symbol: Image(systemName: "square.on.square"))
+                            ChunkButton(color: .purple, symbol: Image(systemName: "square.on.square"))
+                        }
+                    Text("What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz What the sigma ohi rizz ")
+                            .padding()
+                    }
+                    Divider()
+                    
+                    TextEditor(text: $code, selection: $textSelection)
+                        .textEditorStyle(.automatic)
+                        .foregroundStyle(.secondary)
+                        .padding()
+                        .frame(width: geo.size.width * 2/3)
+                        
+                }
+                
+                VStack {
+                    ProgressBarView()
+
+                    Spacer()
+                }
+                
+
+            }
+            .frame(width: geo.size.width, height: geo.size.height)
         }
-        .padding()
     }
 }
 
