@@ -1,0 +1,11 @@
+langchain
+langgraph
+langchain-community
+langchain-huggingface
+langchain-google-genai
+sentence-transformers
+bs4
+python-dotenv
+chromadb
+langchain_chroma
+fastapi
