@@ -20,7 +20,7 @@ struct AuraCounterView: View {
                     .rotationEffect(.degrees(-90))
                     .animation(.easeInOut, value: aura / 10000)
             }
-            .frame(width: 300, height: 300)
+            .frame(width: 200, height: 200)
 //                .fill(
 //                    RadialGradient(
 //                        gradient: Gradient(colors: [.red.opacity(0.3), .orange.opacity(0.1), .clear]),
