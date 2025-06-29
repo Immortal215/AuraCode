@@ -1,13 +1,17 @@
 import SwiftUI
+import Firebase
+import FirebaseFirestore
 
 struct LessonView: View {
     @Binding var code: String
     let lesson: LessonOverview
     let lessonIndex: Int
     let learningPathId: String
+    var viewModel : AuthenticationViewModel
     
     @State var isLoading = true
     @State var errorMessage: String?
+    @State var lessonData: Lesson?
     
     var body: some View {
         GeometryReader { geo in
@@ -28,8 +32,14 @@ struct LessonView: View {
                                     ChunkButton(color: .purple, symbol: .init(systemName: "square.on.square"))
                                     ChunkButton(color: .purple, symbol: .init(systemName: "square.on.square"))
                                 }
-                                Text("Lesson content loaded below.")
-                                    .padding(.top)
+                                if let lessonData = lessonData {
+                                    Text("Lesson screen type: \(lessonData.screen_type)")
+                                    if let options = lessonData.options {
+                                        ForEach(options, id: \.option) { opt in
+                                            Text("• \(opt.option)\(opt.is_correct ? " ✅" : "")")
+                                        }
+                                    }
+                                }
                             }
                             .padding()
                         }
@@ -40,7 +50,7 @@ struct LessonView: View {
                             .frame(width: geo.size.width * 2/3)
                     }
                 }
-                
+
                 if let error = errorMessage {
                     VStack(spacing: 12) {
                         Text("Error: \(error)")
@@ -55,10 +65,43 @@ struct LessonView: View {
                 }
             }
             .onAppear {
-                Task { await fetchLessonContent() }
+                guard let uid = viewModel.uid else {
+                    errorMessage = "User not logged in"
+                    isLoading = false
+                    return
+                }
+
+                let db = Firestore.firestore()
+                let lessonRef = db.collection("users")
+                    .document(uid)
+                    .collection("learning_paths")
+                    .document(learningPathId)
+                    .collection("modules")
+                    .document(String(lessonIndex))
+
+                lessonRef.getDocument { document, error in
+                    if let error = error {
+                        self.errorMessage = "Firestore error: \(error.localizedDescription)"
+                        self.isLoading = false
+                        return
+                    }
+
+                    if let document = document, document.exists,
+                       let data = try? JSONSerialization.data(withJSONObject: document.data() ?? [:]),
+                       let lesson = try? JSONDecoder().decode(Lesson.self, from: data) {
+                        self.lessonData = lesson
+                        self.code = lesson.code ?? ""
+                        self.isLoading = false
+                    } else {
+                        Task {
+                            await fetchLessonContent()
+                        }
+                    }
+                }
             }
         }
     }
+
     func fetchLessonContent() async {
         isLoading = true
         errorMessage = nil
@@ -70,7 +113,7 @@ struct LessonView: View {
         
         do {
             let (data, response) = try await sendAuthorizedRequest(
-                endpoint:  "/create_lesson",
+                endpoint: "/create_lesson",
                 body: body
             )
             
@@ -80,9 +123,9 @@ struct LessonView: View {
                 return
             }
             
-            if let result = String(data: data, encoding: .utf8) {
-                code = result
-            }
+            let decoded = try JSONDecoder().decode(Lesson.self, from: data)
+            self.lessonData = decoded
+            self.code = decoded.code ?? ""
             
         } catch {
             errorMessage = "Network error: \(error.localizedDescription)"
@@ -91,3 +134,4 @@ struct LessonView: View {
         isLoading = false
     }
 }
+

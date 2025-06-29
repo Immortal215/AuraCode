@@ -8,8 +8,8 @@ struct HomeView: View {
     var viewModel: AuthenticationViewModel
     @Binding var showSignInView: Bool
 
-    @State private var showPopover = false
-    @State private var topicInput = ""
+    @State var showPopover = false
+    @State var topicInput = ""
     @StateObject var pathViewModel = LearningPathViewModel()
 
     var body: some View {
@@ -18,7 +18,7 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     SectionView(title: "My Learning Paths", subtitle: "Your learning paths") {
                         ForEach(pathViewModel.learningPaths) { path in
-                            NavigationLink(destination: LearningPathOverview(learningPath: path)) {
+                            NavigationLink(destination: LearningPathOverview(learningPath: path, viewModel: viewModel)) {
                                 VStack(alignment: .leading, spacing: 8) {
                                     Text(path.name)
                                         .font(.headline)
