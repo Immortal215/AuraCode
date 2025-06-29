@@ -4,14 +4,19 @@ from schemas import LessonContent, LearningPath, LessonOverview, get_user_contex
 from dotenv import load_dotenv
 import os
 
+# loading api key from .env
 load_dotenv()
 api_key = os.getenv("GENAI_API_KEY")  
+
+# setting up gemini client
 client = genai.Client(api_key=api_key)
 
+# basic functioon to generate structuerd output from Gemini
 def generate_content(prompt, schema, model_id = "gemini-1.5-flash"):
 	response = client.models.generate_content(model=model_id, contents=prompt, config={"response_mime_type":"application/json", "response_schema":schema})
 	return (response.text)
 
+# creating a lesson based user context and lesson information
 def generate_lesson(user_uid:str, lesson_overview:LessonOverview):
 	user_context = get_user_context(user_uid)
 	formatted_prompt = lesson_prompt.format(
@@ -29,6 +34,7 @@ def generate_lesson(user_uid:str, lesson_overview:LessonOverview):
 	lesson_obj = LessonContent.model_validate_json(json_str)
 	return lesson_obj
 
+# creating a learning path based on user id and topic
 def generate_learning_path(user_uid:str, topic:str):
 	user_context = get_user_context(user_uid)
 	formatted_prompt = learning_path_prompt.format(

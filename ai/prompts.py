@@ -1,9 +1,12 @@
+# ALL PROMPTS USED IN PROJECT
 
+# Base prompt to personalize per user
 USER_CONTEXT_TEMPLATE = """
 The learner, {name}, is in grade {grade_level} and prefers a "{learning_style}" learning style.
 Take this into account when designing content, tone, examples, and module types.
 """
 
+# Prompt to make the overall learning path
 learning_path_prompt = USER_CONTEXT_TEMPLATE + """
 You're an expert curriculum designer for {language}. Create a learning path to help someone learn {topic} from scratch.
 
@@ -23,6 +26,7 @@ Lessons should be ordered from beginner to advanced.
 Respond in structured format only.
 """
 
+# Prompt to make the actual lesson
 lesson_prompt = USER_CONTEXT_TEMPLATE + """
 You are an expert curriculum designer for {language}. Design a complete lesson named "{lesson_name}" with the objective: "{lesson_objective}" to teach the following concepts: "{concepts}".
 

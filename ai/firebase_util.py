@@ -3,6 +3,7 @@ from firebase_admin import credentials, firestore
 from fastapi import Header, HTTPException, status
 from firebase_admin import auth
 
+# SETTING UP BASIC Firebase functions
 
 # setting up firebase app
 cred = credentials.Certificate("firebase.json")
@@ -30,6 +31,7 @@ def verify_firebase_token(authorization: str = Header(None)) -> str:
     except Exception:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
 
+# getting auth record from firebase
 def get_firebase_user(uid: str):
     try:
         user_record = auth.get_user(uid)
@@ -40,7 +42,8 @@ def get_firebase_user(uid: str):
     except Exception as e:
         print(f"Error fetching user: {e}")
         return None
-    
+
+# getting database record from firestore
 def get_user_data(uid: str):
     doc_ref = firestore_db.collection("users").document(uid)
     doc = doc_ref.get()

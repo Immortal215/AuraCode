@@ -2,7 +2,7 @@ from typing import List, Literal, Optional
 from pydantic import BaseModel, Field, root_validator
 from firebase_util import get_firebase_user, get_user_data
 
-# User customization
+# User Context Moodel
 class UserContext(BaseModel):
     name: str
     grade_level: str
@@ -14,7 +14,7 @@ class Option(BaseModel):
     option: str = Field(..., description="Text of the answer option")
     is_correct: bool = Field(..., description="True if this option is the correct answer")
 
-# Core lesson module
+# Basic Module
 class Module(BaseModel):
     screen_type: Literal["text", "mcq", "code", "short_answer"] = Field(..., description="Type of module screen")
     content: str = Field(..., description="Textual content or instruction for the learner")
@@ -26,8 +26,7 @@ class Module(BaseModel):
         description="List of answer options (only used for 'mcq' screens)"
     )
 
-
-# Top-level lesson content
+# List of Modules in a lesson
 class LessonContent(BaseModel):
     modules: List[Module] = Field(..., description="List of lesson modules")
 
@@ -39,7 +38,7 @@ class LessonOverview(BaseModel):
     difficulty: int = Field(..., ge=1, le=5, description="Difficulty from 1 (easy) to 5 (hard)")
     estimated_time: int = Field(..., description="Estimated time to complete the lesson in minutes")
 
-# Series of lessons
+# Learning Path Schema
 class LearningPath(BaseModel):
     name: str = Field(..., description="Name of the learning path")
     lessons: List[LessonOverview] = Field(..., description="Ordered list of lessons")
