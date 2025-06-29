@@ -22,11 +22,11 @@ struct SigninView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Hey!")
                         .font(.system(size: 36, weight: .bold))
-                        .foregroundColor(.black)
+                        .foregroundColor(.white)
 
                     Text("Welcome Back!")
                         .font(.system(size: 28, weight: .semibold))
-                        .foregroundColor(.black)
+                        .foregroundColor(.white)
 
                     Text("Sign in with Google to use AuraCode!")
                         .font(.system(size: 16))
@@ -50,6 +50,7 @@ struct SigninView: View {
                         }
                     }
                 }
+                .buttonStyle(.plain)
 
                 Spacer()
 
@@ -74,9 +75,8 @@ struct SigninView: View {
             }
             .padding(.horizontal, 64)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.white)
+            .background(.systemBackground)
 
-            // Right side: Illustration
             ZStack {
                 LinearGradient(
                     gradient: Gradient(colors: [Color.purple.opacity(0.9), Color.blue.opacity(0.8)]),
@@ -97,3 +97,4 @@ struct SigninView: View {
 )
     }
 }
+

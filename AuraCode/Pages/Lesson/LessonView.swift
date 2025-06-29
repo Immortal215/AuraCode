@@ -11,7 +11,7 @@ struct RichLessonTextView: View {
             ForEach(components.indices, id: \.self) { index in
                 if index % 2 == 0 {
                     Text(.init(components[index]))
-                        .font(.system(size: 18, weight: .medium))
+                        .font(.system(size: 26, weight: .medium))
                         .foregroundColor(.primary)
                         .lineSpacing(4)
                         .multilineTextAlignment(.leading)
@@ -75,7 +75,7 @@ struct RichLessonTextView: View {
          
             let pasteboard = NSPasteboard.general
             pasteboard.clearContents()
-            pasteboard.setString(code, forType: .string)
+            pasteboard.setString(code.replacingOccurrences(of: "python", with: "").replacingOccurrences(of: "javascript", with: ""), forType: .string)
 
             withAnimation {
                 showCopyConfirmation = true
@@ -97,7 +97,7 @@ struct LessonView: View {
     let learningPathId: String
     var viewModel: AuthenticationViewModel
     var learningPathDoc : LearningPath
-    
+    @Binding var showSignInView : Bool
     @Binding var aura: Int
 
     @State var isLoading = true
@@ -110,6 +110,7 @@ struct LessonView: View {
     @State var showFeedback = false
     @State var feedbackMessage = ""
     @State var isCorrect = false
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         GeometryReader { geo in
@@ -125,7 +126,6 @@ struct LessonView: View {
                             .foregroundColor(.purple)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color("BackgroundColor").ignoresSafeArea())
                 } else {
                     HStack(spacing: 0) {
                         VStack(alignment: .leading, spacing: 24) {
@@ -151,11 +151,12 @@ struct LessonView: View {
                                 }
                                 .disabled(currentIndex == 0 || lessonData!.modules[currentIndex - 1].question == true )
                                 .opacity(currentIndex == 0 || lessonData!.modules[currentIndex - 1].question == true ? 0.6 : 1.0)
+                                .buttonStyle(.plain)
                                 
                                 Spacer()
                                 
                                 HStack(spacing: 8) {
-                                    Image(systemName: "star.fill")
+                                    Image(systemName: "flame")
                                         .foregroundColor(.yellow)
                                         .font(.system(size: 16))
                                     Text("\(aura)")
@@ -332,7 +333,7 @@ struct LessonView: View {
                                             Image(systemName: "star.fill")
                                                 .foregroundColor(.yellow)
                                                 .font(.system(size: 24))
-                                            Text("Total Aura Points: \(aura)")
+                                            Text("Total Aura Points: \(aura + 50)")
                                                 .font(.system(size: 20, weight: .semibold))
                                                 .foregroundColor(.purple)
                                         }
@@ -348,7 +349,6 @@ struct LessonView: View {
                         }
                         .padding(24)
                         .frame(width: geo.size.width / 3)
-                        .background(Color("BackgroundColor"))
                         
                         Rectangle()
                             .fill(Color.gray.opacity(0.3))
@@ -357,9 +357,7 @@ struct LessonView: View {
                         CodeEditorView(code: $code, output: $output)
                             .padding(24)
                             .frame(width: geo.size.width * 2 / 3)
-                            .background(Color("BackgroundColor"))
                     }
-                    .background(Color("BackgroundColor").ignoresSafeArea())
                 }
 
                 if let error = errorMessage {
@@ -385,7 +383,6 @@ struct LessonView: View {
                     .padding(24)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                         //   .fill(.systemBackground)
                             .shadow(radius: 20)
                     )
                     .padding(40)
@@ -408,7 +405,6 @@ struct LessonView: View {
                             .fill(isCorrect ? .green : .red)
                             .saturation(0.3)
                             .opacity(0.8)
-                      //      .fill(Color(.systemBackground))
                             .shadow(radius: 10)
                     )
                     .transition(.scale.combined(with: .opacity))
@@ -454,15 +450,8 @@ struct LessonView: View {
             }
 
             print("Lesson completion sent successfully")
-            await MainActor.run {
-                if let window = NSApplication.shared.windows.first {
-                    window.contentView = NSHostingView(rootView: HomeView(
-                        code: $code,
-                        aura: $aura,
-                        viewModel: viewModel,
-                    ))
-                }
-            }
+            dismiss()
+
         } catch {
             print("Error sending lesson completion: \(error.localizedDescription)")
         }
@@ -475,8 +464,7 @@ struct LessonView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             if isCorrect && !completedModules.contains(currentIndex) {
                 completedModules.insert(currentIndex)
-                aura += 10
-                showFeedbackToast(message: "Correct! +10 aura", isCorrect: true)
+                showFeedbackToast(message: "Correct! + Aura!", isCorrect: true)
             } else if isCorrect {
                 showFeedbackToast(message: "Correct!", isCorrect: true)
             } else {
@@ -495,8 +483,7 @@ struct LessonView: View {
 
     func handleShortAnswer() {
         completedModules.insert(currentIndex)
-        aura += 10
-        showFeedbackToast(message: "Great answer! +10 aura", isCorrect: true)
+        showFeedbackToast(message: "Great answer! + Aura!", isCorrect: true)
 
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
@@ -513,8 +500,7 @@ struct LessonView: View {
 
         if trimmedOutput == trimmedExpected {
             completedModules.insert(currentIndex)
-            aura += 15
-            showFeedbackToast(message: "Perfect! Code output matches! +15 aura", isCorrect: true)
+            showFeedbackToast(message: "Perfect! Code output matches! + Aura!", isCorrect: true)
 
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
@@ -530,7 +516,6 @@ struct LessonView: View {
     func handleTextModule() {
         if !completedModules.contains(currentIndex) {
             completedModules.insert(currentIndex)
-            aura += 5
 
         }
         Task {
@@ -608,8 +593,15 @@ struct LessonView: View {
                 selectedOptionIndex = nil
                 code = lessonData.modules[currentIndex].code ?? code
             }
-            else{
-                await markLessonAsCompleted()
+            else {
+                currentIndex += 1
+                selectedOptionIndex = nil
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                    Task {
+                        await markLessonAsCompleted()
+                    }
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import FirebaseFirestore
 
 struct ContentView: View {
     @State var code = "a = 32"
@@ -30,7 +31,30 @@ struct ContentView: View {
                         code: $code,
                         aura: $aura,
                         viewModel: viewModel,
+                        showSignInView: $showSignInView
                     )
+                    .onAppear {
+                        if let uid = uid {
+                            let db = Firestore.firestore()
+                            db.collection("users").document(uid).addSnapshotListener { documentSnapshot, error in
+                                if let error = error {
+                                    print("Error fetching document: \(error)")
+                                    return
+                                }
+
+                                guard let document = documentSnapshot, document.exists else {
+                                    print("Document does not exist")
+                                    return
+                                }
+
+                                if let auraValue = document.get("aura") as? Int {
+                                    aura = auraValue
+                                }
+                            }
+                        }
+
+                    }
+                    
                 }
             }
         }
@@ -57,9 +81,8 @@ struct ContentView: View {
                 showSignInView = false
             }
 
-//            for family in NSFontManager.shared.availableFontFamilies {
-//                print("Family: \(family)")
-//            }
         }
+
     }
 }
+

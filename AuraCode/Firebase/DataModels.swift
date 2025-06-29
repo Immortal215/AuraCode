@@ -232,17 +232,13 @@ func markLessonAsCompleted(user_uid: String, learning_path_id: String, learningP
     let db = Firestore.firestore()
     let learningPathRef = db.collection("users").document(user_uid).collection("learningPaths").document(learning_path_id)
     print(learningPath)
-    // Firestore transaction to safely update the array field
     db.runTransaction({ (transaction, errorPointer) -> Any? in
-        // Directly get the completed_lessons array from learningPath (no need to unwrap)
         var completedLessons = learningPath.completed_lessons
         
-        // Append the current index to the completed_lessons array if not already present
         if !completedLessons.contains(currentIndex) {
             completedLessons.append(currentIndex)
         }
 
-        // Update the document with the new completed_lessons array
         transaction.updateData(["completed_lessons": completedLessons], forDocument: learningPathRef)
         
         return nil
@@ -254,3 +250,4 @@ func markLessonAsCompleted(user_uid: String, learning_path_id: String, learningP
         }
     }
 }
+
