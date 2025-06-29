@@ -333,7 +333,7 @@ struct LessonView: View {
                                             Image(systemName: "star.fill")
                                                 .foregroundColor(.yellow)
                                                 .font(.system(size: 24))
-                                            Text("Total Aura Points: \(aura)")
+                                            Text("Total Aura Points: \(aura + 50)")
                                                 .font(.system(size: 20, weight: .semibold))
                                                 .foregroundColor(.purple)
                                         }
@@ -521,7 +521,6 @@ struct LessonView: View {
     func handleTextModule() {
         if !completedModules.contains(currentIndex) {
             completedModules.insert(currentIndex)
-            aura += 5
 
         }
         Task {
@@ -599,8 +598,15 @@ struct LessonView: View {
                 selectedOptionIndex = nil
                 code = lessonData.modules[currentIndex].code ?? code
             }
-            else{
-                await markLessonAsCompleted()
+            else {
+                currentIndex += 1
+                selectedOptionIndex = nil
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                    Task {
+                        await markLessonAsCompleted()
+                    }
+                }
             }
         }
     }
