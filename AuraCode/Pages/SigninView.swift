@@ -8,28 +8,33 @@ struct SigninView: View {
     @Binding var showOnboarding: Bool
 
     var body: some View {
-        VStack {
-            Text("Aura Code")
-                .font(.title)
-                .bold()
+        HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 32) {
+                Spacer()
 
-            AsyncImage(url: URL(string: "https://preview.redd.it/how-super-saiyan-blue...")) { image in
-                image.resizable()
-                    .scaledToFit()
-                    .frame(maxWidth: 300)
-                    .offset(x: -25)
-            } placeholder: {
-                ProgressView()
-            }
+                Image("Logo")
+                       .resizable()
+                       .scaledToFit()
+                       .frame(width: 160)
+                       .padding(.top, 40)
+                       .padding(.bottom, 20)
+                       .frame(maxWidth: .infinity, alignment: .center)
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Hey!")
+                        .font(.system(size: 36, weight: .bold))
+                        .foregroundColor(.black)
 
-            VStack {
-                Text("Sign In")
-                    .font(.title)
-                    .fontWeight(.semibold)
+                    Text("Welcome Back!")
+                        .font(.system(size: 28, weight: .semibold))
+                        .foregroundColor(.black)
 
-                GoogleSignInButton(
-                    viewModel: GoogleSignInButtonViewModel(scheme: .dark, style: .wide, state: .normal)
-                ) {
+                    Text("Sign in with Google to use AuraCode!")
+                        .font(.system(size: 16))
+                        .foregroundColor(.gray)
+                        .padding(.bottom, 14)
+                }
+
+                CustomGoogleSignInButton(geo: geo) {
                     Task {
                         do {
                             let needsOnboarding = try await viewModel.signInGoogleAndCheckIfNew()
@@ -45,38 +50,50 @@ struct SigninView: View {
                         }
                     }
                 }
-                .frame(width: geo.size.width / 3)
-                .padding()
 
-                // the below will crash because there isnt a logged in thing 
-//                DividerWithOr(width: geo.size.width / 4)
-//
-//                Button {
-//                    viewModel.signInAsGuest()
-//                    showSignInView = false
-//                } label: {
-//                    Label("Continue as Guest", systemImage: "person.fill")
-//                }
-//                .padding()
-//                .background(.gray.opacity(0.2))
-//                .cornerRadius(10)
+                Spacer()
+
+                HStack(spacing: 4) {
+                    Text("By using AuraCode, you agree to our")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+                    Text("terms of use")
+                        .font(.footnote)
+                        .foregroundColor(Color.purple)
+                        .underline()
+                    Text("and")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+                    Text("privacy policy")
+                        .font(.footnote)
+                        .foregroundColor(Color.purple)
+                        .underline()
+                }
+
+                Spacer()
             }
+            .padding(.horizontal, 64)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.white)
+
+            // Right side: Illustration
+            ZStack {
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.purple.opacity(0.9), Color.blue.opacity(0.8)]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
+
+                Image("Graphic")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: geo.size.width * 0.45)
+            }
+            .frame(maxWidth: .infinity)
         }
+        .frame(width: geo.size.width, height: geo.size.height)
+        .background(Color(.gray).opacity(0.1)
+)
     }
 }
-
-struct DividerWithOr: View {
-    var width: CGFloat
-    var body: some View {
-        HStack {
-            Rectangle().fill(Color.gray.opacity(0.3)).frame(height: 1)
-            Text("or")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-                .padding(.horizontal, 10)
-            Rectangle().fill(Color.gray.opacity(0.3)).frame(height: 1)
-        }
-        .frame(width: width)
-    }
-}
-
