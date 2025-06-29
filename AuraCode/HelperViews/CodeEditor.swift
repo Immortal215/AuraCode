@@ -5,7 +5,8 @@ struct CodeEditorView: View {
     
     @Binding var code: String
     @State var language = CodeEditor.Language.python
-    @State var theme = CodeEditor.availableThemes.first { $0.rawValue == "tomorrow-night" }! 
+    @State var theme = CodeEditor.availableThemes.first { $0.rawValue == "tomorrow-night" }!
+    @State var fontSize: CGFloat = 14
     @State var playButtonHover = false
     @State var playing = false
     @State var output = ""
@@ -39,14 +40,30 @@ struct CodeEditorView: View {
 
             Divider()
 
-            CodeEditor(
-                source: $code,
-                language: language,
-                theme: theme,
-                flags: [.selectable, .editable, .smartIndent],
-                indentStyle: .softTab(width: 2),
-                autoPairs: ["{": "}", "<": ">", "'": "'", #"""#: #"""#, "(": ")"]
-            )
+            HStack(alignment: .top, spacing: 0) {
+                ScrollView(.vertical) {
+                    VStack(alignment: .trailing, spacing: 2) {
+                        ForEach(0..<code.components(separatedBy: .newlines).count, id: \.self) { i in
+                            Text("\(i + 1)")
+                                .font(.system(size: fontSize, design: .monospaced))
+                                .foregroundColor(.gray)
+                                .padding(.horizontal, 4)
+                                .padding(.top, -2)
+                        }
+                    }
+                    .padding(.top, 10)
+                }
+                 
+                CodeEditor(
+                    source: $code,
+                    language: language,
+                    theme: theme,
+                    fontSize: $fontSize,
+                    flags: [.selectable, .editable, .smartIndent],
+                    indentStyle: .softTab(width: 2),
+                    autoPairs: ["{": "}", "<": ">", "'": "'", #"""#: #"""#, "(": ")"]
+                )
+            }
             .frame(minWidth: 640, minHeight: 480)
 
             Divider()
@@ -73,7 +90,6 @@ struct CodeEditorView: View {
                     .foregroundStyle(.secondary)
                     .background(.black)
                     .cornerRadius(8)
-
                 }
                 .frame(minHeight: 100)
             }
@@ -85,7 +101,6 @@ struct CodeEditorView: View {
         playing = true
         let tempDirectory = FileManager.default.temporaryDirectory
 
-        // selects the chosen language to process
         let langConfig: (String, String)? = {
             switch language {
             case .python:
@@ -144,4 +159,3 @@ struct CodeEditorView: View {
         }
     }
 }
-

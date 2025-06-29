@@ -19,5 +19,8 @@ struct AuraCodeApp: App {
         WindowGroup {
             ContentView()
         }
+        .commands {
+           TextFormattingCommands()
+        }
     }
 }

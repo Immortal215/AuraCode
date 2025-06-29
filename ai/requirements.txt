@@ -9,3 +9,5 @@ python-dotenv
 chromadb
 langchain_chroma
 fastapi
+firebase-admin
+uvicorn
