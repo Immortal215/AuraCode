@@ -3,7 +3,7 @@ import AppKit
 
 struct ContentView: View {
     @State var code = "a = 32"
-    @AppStorage("aura") var aura = 23
+    @AppStorage("aura") var aura = 0
     @AppStorage("userEmail") var userEmail: String?
     @AppStorage("userName") var userName: String?
     @AppStorage("userImage") var userImage: String?
@@ -15,8 +15,9 @@ struct ContentView: View {
     var viewModel = AuthenticationViewModel()
 
     var body: some View {
+        GeometryReader { geo in
+
         NavigationStack {
-            GeometryReader { geo in
                 if showSignInView {
                     SigninView(
                         geo: geo,

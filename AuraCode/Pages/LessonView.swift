@@ -10,12 +10,13 @@ struct LessonView: View {
     var viewModel: AuthenticationViewModel
     @Binding var aura: Int
 
-    @State private var isLoading = true
-    @State private var errorMessage: String?
-    @State private var lessonData: Lesson?
-    @State private var currentIndex: Int = 0
-    @State private var completedModules: Set<Int> = []
-    @State private var selectedOptionIndex: Int?
+    @State var isLoading = true
+    @State var errorMessage: String?
+    @State var lessonData: Lesson?
+    @State var currentIndex: Int = 0
+    @State var completedModules: Set<Int> = []
+    @State var selectedOptionIndex: Int?
+    @State var shortAnswerText: String = ""
 
     var body: some View {
         GeometryReader { geo in
@@ -102,6 +103,21 @@ struct LessonView: View {
                                             }
                                         }
                                     }
+                                }  else if module.screen_type == "short_answer" {
+                                    VStack(alignment: .leading, spacing: 12) {
+                                        TextField("Type your answer here...", text: $shortAnswerText)
+                                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                                            .padding(.vertical, 8)
+                                        
+                                        Button("Submit Answer") {
+                                            completedModules.insert(currentIndex)
+                                            aura += 10
+                                            moveToNext()
+                                            shortAnswerText = ""
+                                            
+                                        }
+                                        .buttonStyle(PrimaryButtonStyle())
+                                    }
                                 } else if module.screen_type == "code" {
                                     VStack(spacing: 20) {
                                         Button("Submit Code") {
@@ -149,7 +165,6 @@ struct LessonView: View {
                         .frame(width: geo.size.width / 3)
                         .background(Color("BackgroundColor"))
                         .cornerRadius(20)
-                        .shadow(color: .purple.opacity(0.4), radius: 10, x: 0, y: 5)
 
                         Divider()
 
@@ -274,7 +289,6 @@ struct PrimaryButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity)
             .background(configuration.isPressed ? Color.purple.opacity(0.7) : Color.purple)
             .cornerRadius(15)
-            .shadow(color: Color.purple.opacity(0.5), radius: 10, x: 0, y: 5)
             .scaleEffect(configuration.isPressed ? 0.95 : 1)
             .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
     }
