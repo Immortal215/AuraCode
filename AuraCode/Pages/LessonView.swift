@@ -6,19 +6,16 @@ struct RichLessonTextView: View {
     let content: String
 
     var body: some View {
-        // Split content by ```
         let components = content.components(separatedBy: "```")
         VStack(alignment: .leading, spacing: 12) {
             ForEach(components.indices, id: \.self) { index in
                 if index % 2 == 0 {
-                    // Normal text segment
-                    Text(components[index])
+                    Text(.init(components[index]))
                         .font(.system(size: 18, weight: .medium))
                         .foregroundColor(.primary)
                         .lineSpacing(4)
                         .multilineTextAlignment(.leading)
                 } else {
-                    // Code segment
                     CodeBlockView(code: components[index])
                 }
             }
@@ -27,12 +24,12 @@ struct RichLessonTextView: View {
 
     struct CodeBlockView: View {
         let code: String
-        @State private var showCopyConfirmation = false
+        @State var showCopyConfirmation = false
 
         var body: some View {
             ZStack(alignment: .topTrailing) {
                 ScrollView(.horizontal) {
-                    Text(code)
+                    Text(code.replacingOccurrences(of: "python", with: "").replacingOccurrences(of: "javascript", with: ""))
                         .font(.system(.body, design: .monospaced))
                         .foregroundColor(Color(.label))
                         .padding(12)
@@ -74,14 +71,11 @@ struct RichLessonTextView: View {
             .animation(.easeInOut, value: showCopyConfirmation)
         }
 
-        private func copyToClipboard() {
-            #if canImport(UIKit)
-            UIPasteboard.general.string = code
-            #elseif canImport(AppKit)
+        func copyToClipboard() {
+         
             let pasteboard = NSPasteboard.general
             pasteboard.clearContents()
             pasteboard.setString(code, forType: .string)
-            #endif
 
             withAnimation {
                 showCopyConfirmation = true
@@ -134,7 +128,11 @@ struct LessonView: View {
                     HStack(spacing: 0) {
                         VStack(alignment: .leading, spacing: 24) {
                             HStack {
-                                Button(action: backToPrevious) {
+                                Button{
+                                    if lessonData!.modules[currentIndex - 1].question == false {
+                                        backToPrevious()
+                                    }
+                                } label: {
                                     HStack(spacing: 6) {
                                         Image(systemName: "chevron.left")
                                             .font(.system(size: 14, weight: .semibold))
@@ -149,8 +147,8 @@ struct LessonView: View {
                                             .fill(Color.purple)
                                     )
                                 }
-                                .disabled(currentIndex == 0)
-                                .opacity(currentIndex == 0 ? 0.6 : 1.0)
+                                .disabled(currentIndex == 0 || lessonData!.modules[currentIndex - 1].question == true )
+                                .opacity(currentIndex == 0 || lessonData!.modules[currentIndex - 1].question == true ? 0.6 : 1.0)
                                 
                                 Spacer()
                                 
@@ -403,6 +401,9 @@ struct LessonView: View {
                     .padding(20)
                     .background(
                         RoundedRectangle(cornerRadius: 12)
+                            .fill(isCorrect ? .green : .red)
+                            .saturation(0.3)
+                            .opacity(0.8)
                       //      .fill(Color(.systemBackground))
                             .shadow(radius: 10)
                     )
