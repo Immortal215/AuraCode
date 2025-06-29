@@ -84,6 +84,8 @@ struct LessonView: View {
                                                     completedModules.insert(currentIndex)
                                                     aura += 10
                                                     moveToNext()
+                                                } else if opt.is_correct{
+                                                    moveToNext()
                                                 }
                                             }) {
                                                 HStack {
@@ -118,22 +120,22 @@ struct LessonView: View {
                                         }
                                         .buttonStyle(PrimaryButtonStyle())
                                     }
-                                } else if module.screen_type == "code" {
-                                    VStack(spacing: 20) {
-                                        Button("Submit Code") {
-                                            // Example code validation - replace with actual logic
-                                            if code.contains("Hello, world!") && !completedModules.contains(currentIndex) {
-                                                completedModules.insert(currentIndex)
-                                                aura += 10
-                                                moveToNext()
-                                            }
-                                        }
-                                        .buttonStyle(PrimaryButtonStyle())
-                                        
-                                        Text("Write your code in the editor on the right!")
-                                            .font(.footnote)
-                                            .foregroundColor(.gray)
-                                    }
+//                                } else if module.screen_type == "code" {
+//                                    VStack(spacing: 20) {
+//                                        Button("Submit Code") {
+//                                            // Example code validation - replace with actual logic
+//                                            if code.contains("Hello, world!") && !completedModules.contains(currentIndex) {
+//                                                completedModules.insert(currentIndex)
+//                                                aura += 10
+//                                                moveToNext()
+//                                            }
+//                                        }
+//                                        .buttonStyle(PrimaryButtonStyle())
+//                                        
+//                                        Text("Write your code in the editor on the right!")
+//                                            .font(.footnote)
+//                                            .foregroundColor(.gray)
+//                                    }
                                 } else {
                                     Button("Next") {
                                         if !completedModules.contains(currentIndex) {
