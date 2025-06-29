@@ -30,7 +30,6 @@ struct ContentView: View {
                         code: $code,
                         aura: $aura,
                         viewModel: viewModel,
-                        showSignInView: $showSignInView
                     )
                 }
             }
