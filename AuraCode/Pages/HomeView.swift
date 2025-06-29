@@ -7,10 +7,10 @@ struct HomeView: View {
     @Binding var aura: Int
     var viewModel: AuthenticationViewModel
 
-    @State private var showPopover = false
-    @State private var topicInput = ""
-    @StateObject private var pathViewModel = LearningPathViewModel()
-
+    @State var showPopover = false
+    @State var topicInput = ""
+    @StateObject  var pathViewModel = LearningPathViewModel()
+    @Binding var showSignInView : Bool 
     var body: some View {
         VStack(spacing: 0) {
             Image("Logo")
@@ -21,24 +21,26 @@ struct HomeView: View {
                 .frame(width: 160)
             ScrollView {
                 VStack(alignment: .leading, spacing: 32) {
-                    WelcomeHeader(viewModel: viewModel)
+                    WelcomeHeader(viewModel: viewModel, showSignInView: $showSignInView)
+                        .padding()
                     CourseGrid(paths: pathViewModel.learningPaths, viewModel: viewModel, aura: $aura, activate:{
                         showPopover.toggle() 
-                    })
+                    }, showSignInView: $showSignInView)
+                    .padding()
                 }
                 .padding(.horizontal, 160)
                 .padding(.top, 20)
             }
-            .background(Color.white)
+            .background(.systemBackground)
             Spacer(minLength: 100)
         }
-        .background(Color.white)
+        .background(.systemBackground)
         .onAppear(perform: startListening)
         .onDisappear(perform: stopListening)
         .popover(isPresented: $showPopover, content: popoverContent)
     }
 
-    private func popoverContent() -> some View {
+    func popoverContent() -> some View {
         VStack(spacing: 20) {
             Text("What do you want to learn about?")
                 .font(.headline)
@@ -61,17 +63,17 @@ struct HomeView: View {
         .frame(width: 320)
     }
 
-    private func startListening() {
+    func startListening() {
         if let uid = viewModel.uid {
             pathViewModel.startListening(uid: uid)
         }
     }
 
-    private func stopListening() {
+    func stopListening() {
         pathViewModel.stopListening()
     }
 
-    private func createLearningPath() async {
+    func createLearningPath() async {
         guard let _ = viewModel.getCurrentUser() else {
             print("No user logged in")
             return

@@ -97,7 +97,7 @@ struct LessonView: View {
     let learningPathId: String
     var viewModel: AuthenticationViewModel
     var learningPathDoc : LearningPath
-    
+    @Binding var showSignInView : Bool
     @Binding var aura: Int
 
     @State var isLoading = true
@@ -460,6 +460,7 @@ struct LessonView: View {
                         code: $code,
                         aura: $aura,
                         viewModel: viewModel,
+                        showSignInView: $showSignInView
                     ))
                 }
             }

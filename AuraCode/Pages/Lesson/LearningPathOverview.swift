@@ -5,7 +5,7 @@ struct LearningPathOverview: View {
     @State var code: String = ""
     var viewModel : AuthenticationViewModel
     @Binding var aura : Int
-    
+    @Binding var showSignInView : Bool
     var body: some View {
         GeometryReader { geo in
             VStack(alignment: .leading, spacing: 16) {
@@ -27,7 +27,8 @@ struct LearningPathOverview: View {
                             learningPathId: learningPath.id ?? "unknown",
                             viewModel: viewModel,
                             learningPathDoc: learningPath,
-                            aura: $aura 
+                            showSignInView: $showSignInView,
+                            aura: $aura,
                         )
                     ) {
                         VStack(alignment: .leading) {
