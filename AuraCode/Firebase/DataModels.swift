@@ -15,6 +15,56 @@ struct Personal: Codable, Equatable, Hashable {
     var grade: String
 }
 
+struct LessonOverview: Codable {
+    var title: String
+    var objective: String
+    var key_concepts: [String]
+    var difficulty: Int
+    var estimated_time: Int
+}
+
+struct LearningPath: Identifiable, Codable {
+    var id: String? = nil 
+    var name: String
+    var lessons: [LessonOverview]
+}
+
+class LearningPathViewModel: ObservableObject {
+    @Published var learningPaths: [LearningPath] = []
+    private var listener: ListenerRegistration?
+
+    func startListening(uid: String) {
+        let db = Firestore.firestore()
+        let collectionRef = db.collection("users").document(uid).collection("learning_paths")
+
+        listener = collectionRef.addSnapshotListener { snapshot, error in
+            if let error = error {
+                print("Error listening: \(error)")
+                return
+            }
+
+            guard let documents = snapshot?.documents else { return }
+
+            self.learningPaths = documents.compactMap { doc in
+                do {
+                    var path = try doc.data(as: LearningPath.self)
+                    path.id = doc.documentID
+                    return path
+                } catch {
+                    print("Decoding error: \(error)")
+                    return nil
+                }
+            }
+        }
+    }
+
+    func stopListening() {
+        listener?.remove()
+        listener = nil
+    }
+}
+
+
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
     @AppStorage("userEmail") var userEmail: String?
@@ -32,6 +82,11 @@ final class AuthenticationViewModel: ObservableObject {
         userType = nil
         uid = nil
     }
+    
+    func getCurrentUser() -> User? {
+        Auth.auth().currentUser
+    }
+
     
     func loadCurrentUser() {
         guard let user = Auth.auth().currentUser else { return }
@@ -88,7 +143,20 @@ final class AuthenticationViewModel: ObservableObject {
         }
     }
     
-    
+    func signOutUser(onSuccess: () -> Void) {
+        do {
+            try AuthenticationManager.shared.signOut()
+            userEmail = nil
+            userName = nil
+            userImage = nil
+            userType = nil
+            uid = nil
+            onSuccess()
+        } catch {
+            print("error with guest signout")
+        }
+    }
+
     
     func signInAsGuest() {
         self.userName = "Guest Account"

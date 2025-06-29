@@ -16,6 +16,7 @@ struct AuthDataResultModel {
     }
 }
 
+
 final class AuthenticationManager {
     static let shared = AuthenticationManager()
     private init() {}
@@ -47,3 +48,27 @@ extension AuthenticationManager {
     }
 }
 
+
+func sendAuthorizedRequest(
+    endpoint: String,
+    body: [String: Any],
+    method: String = "POST"
+) async throws -> (Data, URLResponse) {
+    guard let user = Auth.auth().currentUser else {
+        throw NSError(domain: "AuthError", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])
+    }
+
+    let token = try await user.getIDToken()
+    
+    guard let url = URL(string: "http://192.168.1.68:8000\(endpoint)") else {
+        throw URLError(.badURL)
+    }
+
+    var request = URLRequest(url: url)
+    request.httpMethod = method
+    request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    request.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+    return try await URLSession.shared.data(for: request)
+}

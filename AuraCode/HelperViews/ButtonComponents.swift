@@ -62,3 +62,39 @@ struct ChunkButton: View {
     }
     
 }
+
+
+extension Color {
+    init(hex: String) {
+        let scanner = Scanner(string: hex)
+        scanner.currentIndex = hex.startIndex
+
+        var rgbValue: UInt64 = 0
+        scanner.scanHexInt64(&rgbValue)
+
+        let r = Double((rgbValue & 0xFF0000) >> 16) / 255
+        let g = Double((rgbValue & 0x00FF00) >> 8) / 255
+        let b = Double(rgbValue & 0x0000FF) / 255
+
+        self.init(red: r, green: g, blue: b)
+    }
+}
+
+extension Font.TextStyle {
+    var size: CGFloat {
+        switch self {
+        case .largeTitle: return 34
+        case .title: return 28
+        case .title2: return 22
+        case .title3: return 20
+        case .headline: return 17
+        case .body: return 17
+        case .callout: return 16
+        case .subheadline: return 15
+        case .footnote: return 13
+        case .caption: return 12
+        case .caption2: return 11
+        @unknown default: return 14
+        }
+    }
+}
