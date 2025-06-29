@@ -75,7 +75,7 @@ struct RichLessonTextView: View {
          
             let pasteboard = NSPasteboard.general
             pasteboard.clearContents()
-            pasteboard.setString(code, forType: .string)
+            pasteboard.setString(code.replacingOccurrences(of: "python", with: "").replacingOccurrences(of: "javascript", with: ""), forType: .string)
 
             withAnimation {
                 showCopyConfirmation = true
