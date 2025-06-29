@@ -29,11 +29,9 @@ struct HomeView: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 32) {
-                    // Header
                     VStack(alignment: .leading, spacing: 16) {
                         ZStack(alignment: .topTrailing) {
                             HStack(spacing: 16) {
-                                // Profile Picture
                                 AsyncImage(url: URL(string: viewModel.getCurrentUser()?.photoURL?.absoluteString ?? "")) { image in
                                     image
                                         .resizable()
@@ -63,7 +61,6 @@ struct HomeView: View {
                             }
                             .padding()
                             
-                            // Logout Button
                             Button {
                                 do {
                                     try AuthenticationManager.shared.signOut()
@@ -93,7 +90,6 @@ struct HomeView: View {
                     .padding(.top, 48)
                     .padding(.horizontal, 160)
                     
-                    // Courses Section
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Your Learning Paths")
                             .font(.title)
@@ -132,7 +128,6 @@ struct HomeView: View {
                                 .buttonStyle(PlainButtonStyle())
                             }
                             
-                            // Add Class Button (always visible, consistent size)
                             Button(action: { showPopover.toggle() }) {
                                 VStack(spacing: 12) {
                                     Image(systemName: "plus")

@@ -11,7 +11,7 @@ struct RichLessonTextView: View {
             ForEach(components.indices, id: \.self) { index in
                 if index % 2 == 0 {
                     Text(.init(components[index]))
-                        .font(.system(size: 18, weight: .medium))
+                        .font(.system(size: 26, weight: .medium))
                         .foregroundColor(.primary)
                         .lineSpacing(4)
                         .multilineTextAlignment(.leading)
@@ -156,7 +156,7 @@ struct LessonView: View {
                                 Spacer()
                                 
                                 HStack(spacing: 8) {
-                                    Image(systemName: "star.fill")
+                                    Image(systemName: "flame")
                                         .foregroundColor(.yellow)
                                         .font(.system(size: 16))
                                     Text("\(aura)")
@@ -349,7 +349,6 @@ struct LessonView: View {
                         }
                         .padding(24)
                         .frame(width: geo.size.width / 3)
-                        .background(Color("BackgroundColor"))
                         
                         Rectangle()
                             .fill(Color.gray.opacity(0.3))
@@ -358,9 +357,7 @@ struct LessonView: View {
                         CodeEditorView(code: $code, output: $output)
                             .padding(24)
                             .frame(width: geo.size.width * 2 / 3)
-                            .background(Color("BackgroundColor"))
                     }
-                    .background(Color("BackgroundColor").ignoresSafeArea())
                 }
 
                 if let error = errorMessage {
@@ -386,7 +383,6 @@ struct LessonView: View {
                     .padding(24)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                         //   .fill(.systemBackground)
                             .shadow(radius: 20)
                     )
                     .padding(40)
@@ -409,7 +405,6 @@ struct LessonView: View {
                             .fill(isCorrect ? .green : .red)
                             .saturation(0.3)
                             .opacity(0.8)
-                      //      .fill(Color(.systemBackground))
                             .shadow(radius: 10)
                     )
                     .transition(.scale.combined(with: .opacity))
