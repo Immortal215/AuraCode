@@ -35,8 +35,8 @@ struct Lesson: Codable, Equatable, Hashable {
 
 struct LessonModule: Codable, Equatable, Hashable {
     var code: String?
+    var expected_output : String?
     var content: String
-    var image: String?
     var options: [MCQOption]?
     var screen_type: String
     var question: Bool

@@ -9,7 +9,7 @@ struct CodeEditorView: View {
     @State var fontSize: CGFloat = 14
     @State var playButtonHover = false
     @State var playing = false
-    @State var output = ""
+    @Binding var output : String
     
     var body: some View {
         VStack(spacing: 0) {
