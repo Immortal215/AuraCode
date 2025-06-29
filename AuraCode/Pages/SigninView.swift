@@ -48,17 +48,18 @@ struct SigninView: View {
                 .frame(width: geo.size.width / 3)
                 .padding()
 
-                DividerWithOr(width: geo.size.width / 4)
-
-                Button {
-                    viewModel.signInAsGuest()
-                    showSignInView = false
-                } label: {
-                    Label("Continue as Guest", systemImage: "person.fill")
-                }
-                .padding()
-                .background(.gray.opacity(0.2))
-                .cornerRadius(10)
+                // the below will crash because there isnt a logged in thing 
+//                DividerWithOr(width: geo.size.width / 4)
+//
+//                Button {
+//                    viewModel.signInAsGuest()
+//                    showSignInView = false
+//                } label: {
+//                    Label("Continue as Guest", systemImage: "person.fill")
+//                }
+//                .padding()
+//                .background(.gray.opacity(0.2))
+//                .cornerRadius(10)
             }
         }
     }
