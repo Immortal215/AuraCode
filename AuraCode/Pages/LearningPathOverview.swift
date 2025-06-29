@@ -3,7 +3,8 @@ import SwiftUI
 struct LearningPathOverview: View {
     let learningPath: LearningPath
     @State var code: String = ""
-
+    var viewModel : AuthenticationViewModel
+    @Binding var aura : Int
     var body: some View {
         GeometryReader { geo in
             VStack(alignment: .leading, spacing: 16) {
@@ -22,7 +23,9 @@ struct LearningPathOverview: View {
                             code: $code,
                             lesson: lesson,
                             lessonIndex: index,
-                            learningPathId: learningPath.id ?? "unknown"
+                            learningPathId: learningPath.id ?? "unknown",
+                            viewModel: viewModel,
+                            aura: $aura 
                         )
                     ) {
                         VStack(alignment: .leading) {

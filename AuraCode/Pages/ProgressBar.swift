@@ -3,7 +3,7 @@ import SwiftUI
 
 struct ProgressBarView: View {
     @State var progressBarSize : CGFloat = 1
-    var aura : Int
+    @Binding var aura : Int
     var body: some View {
         HStack {
             ZStack {

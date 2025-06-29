@@ -29,6 +29,25 @@ struct LearningPath: Identifiable, Codable, Equatable, Hashable {
     var lessons: [LessonOverview]
 }
 
+struct Lesson: Codable, Equatable, Hashable {
+    var modules: [LessonModule]
+}
+
+struct LessonModule: Codable, Equatable, Hashable {
+    var code: String?
+    var content: String
+    var image: String?
+    var options: [MCQOption]?
+    var screen_type: String
+    var question: Bool
+}
+
+struct MCQOption: Codable, Equatable, Hashable {
+    var is_correct: Bool
+    var option: String
+}
+
+
 class LearningPathViewModel: ObservableObject {
     @Published var learningPaths: [LearningPath] = []
     var listener: ListenerRegistration?

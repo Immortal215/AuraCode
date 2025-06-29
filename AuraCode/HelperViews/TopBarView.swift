@@ -2,13 +2,13 @@ import SwiftUI
 
 struct TopBarView: View {
     var viewModel: AuthenticationViewModel
-    var aura: Int
+    @Binding var aura: Int
     var onSignOut: () -> Void
 
     var body: some View {
         VStack {
             HStack {
-                ProgressBarView(aura: aura)
+                ProgressBarView(aura: $aura)
 
                 Text(viewModel.userName ?? "")
                     .padding()

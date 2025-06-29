@@ -4,56 +4,61 @@ import FirebaseFirestore
 
 struct HomeView: View {
     @Binding var code: String
-    var aura: Int
+    @Binding var aura: Int
     var viewModel: AuthenticationViewModel
     @Binding var showSignInView: Bool
 
-    @State private var showPopover = false
-    @State private var topicInput = ""
+    @State var showPopover = false
+    @State var topicInput = ""
     @StateObject var pathViewModel = LearningPathViewModel()
 
     var body: some View {
         ZStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    SectionView(title: "My Learning Paths", subtitle: "Your learning paths") {
-                        ForEach(pathViewModel.learningPaths) { path in
-                            NavigationLink(destination: LearningPathOverview(learningPath: path)) {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text(path.name)
-                                        .font(.headline)
-                                        .foregroundColor(.black)
-
-                                    Text("\(path.lessons.count) lessons")
-                                        .font(.subheadline)
-                                        .foregroundColor(.gray)
+            NavigationStack {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        SectionView(title: "My Learning Paths", subtitle: "Your learning paths") {
+                            ForEach(pathViewModel.learningPaths) { path in
+                                NavigationLink(destination: LearningPathOverview(learningPath: path, viewModel: viewModel, aura: $aura)) {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text(path.name)
+                                            .font(.headline)
+                                            .foregroundColor(.black)
+                                        
+                                        Text("\(path.lessons.count) lessons")
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                    }
+                                    .padding()
+                                    .background(Color.white)
+                                    .cornerRadius(12)
+                                    .shadow(radius: 2)
                                 }
-                                .padding()
-                                .background(Color.white)
-                                .cornerRadius(12)
-                                .shadow(radius: 2)
+                                .buttonStyle(PlainButtonStyle())
                             }
-                            .buttonStyle(PlainButtonStyle())
+                        }
+                        
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.top, 48)
+                    .buttonStyle(.plain)
+                    .onAppear {
+                        if let uid = viewModel.uid {
+                            pathViewModel.startListening(uid: uid)
                         }
                     }
-
-                                }
-                .padding(.horizontal, 24)
-                .padding(.top, 48)
-                .buttonStyle(.plain)
-                .onAppear {
-                    if let uid = viewModel.uid {
-                        pathViewModel.startListening(uid: uid)
+                    .onDisappear {
+                        pathViewModel.stopListening()
                     }
                 }
-                .onDisappear {
-                    pathViewModel.stopListening()
-                }
             }
-
-            TopBarView(viewModel: viewModel, aura: aura) {
-                viewModel.signOutUser {
-                    showSignInView = true
+            .overlay {
+                TopBarView(viewModel: viewModel, aura: $aura) {
+                    viewModel.signOutUser {
+                        showSignInView = true
+                    }
+                    
+                    
                 }
             }
 
