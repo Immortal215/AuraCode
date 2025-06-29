@@ -110,6 +110,7 @@ struct LessonView: View {
     @State var showFeedback = false
     @State var feedbackMessage = ""
     @State var isCorrect = false
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         GeometryReader { geo in
@@ -454,16 +455,8 @@ struct LessonView: View {
             }
 
             print("Lesson completion sent successfully")
-            await MainActor.run {
-                if let window = NSApplication.shared.windows.first {
-                    window.contentView = NSHostingView(rootView: HomeView(
-                        code: $code,
-                        aura: $aura,
-                        viewModel: viewModel,
-                        showSignInView: $showSignInView
-                    ))
-                }
-            }
+            dismiss()
+
         } catch {
             print("Error sending lesson completion: \(error.localizedDescription)")
         }

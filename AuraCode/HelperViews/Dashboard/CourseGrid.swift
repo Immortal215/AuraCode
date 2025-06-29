@@ -84,6 +84,7 @@ struct AddCourseCard: View {
                 .background(.systemGray4)
                 .clipShape(Circle())
         }
+        .buttonStyle(.plain)
         .padding()
         .frame(width: 160, height: 160)
         .background(Color.systemGray6)
