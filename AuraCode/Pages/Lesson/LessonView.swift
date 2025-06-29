@@ -126,7 +126,6 @@ struct LessonView: View {
                             .foregroundColor(.purple)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color("BackgroundColor").ignoresSafeArea())
                 } else {
                     HStack(spacing: 0) {
                         VStack(alignment: .leading, spacing: 24) {
@@ -152,6 +151,7 @@ struct LessonView: View {
                                 }
                                 .disabled(currentIndex == 0 || lessonData!.modules[currentIndex - 1].question == true )
                                 .opacity(currentIndex == 0 || lessonData!.modules[currentIndex - 1].question == true ? 0.6 : 1.0)
+                                .buttonStyle(.plain)
                                 
                                 Spacer()
                                 
@@ -469,8 +469,7 @@ struct LessonView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             if isCorrect && !completedModules.contains(currentIndex) {
                 completedModules.insert(currentIndex)
-                aura += 10
-                showFeedbackToast(message: "Correct! +10 aura", isCorrect: true)
+                showFeedbackToast(message: "Correct! + Aura!", isCorrect: true)
             } else if isCorrect {
                 showFeedbackToast(message: "Correct!", isCorrect: true)
             } else {
@@ -489,8 +488,7 @@ struct LessonView: View {
 
     func handleShortAnswer() {
         completedModules.insert(currentIndex)
-        aura += 10
-        showFeedbackToast(message: "Great answer! +10 aura", isCorrect: true)
+        showFeedbackToast(message: "Great answer! + Aura!", isCorrect: true)
 
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
@@ -507,8 +505,7 @@ struct LessonView: View {
 
         if trimmedOutput == trimmedExpected {
             completedModules.insert(currentIndex)
-            aura += 15
-            showFeedbackToast(message: "Perfect! Code output matches! +15 aura", isCorrect: true)
+            showFeedbackToast(message: "Perfect! Code output matches! + Aura!", isCorrect: true)
 
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
