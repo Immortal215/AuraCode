@@ -23,7 +23,6 @@ Lessons should be ordered from beginner to advanced.
 Respond in structured format only.
 """
 
-
 lesson_prompt = USER_CONTEXT_TEMPLATE + """
 You are an expert curriculum designer for {language}. Design a complete lesson named "{lesson_name}" with the objective: "{lesson_objective}" to teach the following concepts: "{concepts}".
 
@@ -37,8 +36,8 @@ Each module must follow this exact format as a JSON object:
 {{
   "screen_type": "text" | "mcq" | "code" | "short_answer",
   "content": "<explanation or prompt>",
-  "image": "<optional, for screen_type=text>",
-  "code": "<optional, for screen_type=code>",
+  "code": "<starter code if needed, otherwise empty string>",
+  "expected_output": "<expected printed output from learner's code, only for screen_type='code'>",
   "question": <true if it tests the learner, false otherwise>,
   "options": [
     {{
@@ -49,19 +48,15 @@ Each module must follow this exact format as a JSON object:
 }}
 Rules:
 
-Always include "screen_type"
-
-"content" is required for all types
-
-"question" should be true only for quizzes (mcq or short_answer)
-
-"options" should only be included for "mcq", and it must be a list of objects with option and is_correct keys
-
-"code" must be filled in only when screen_type is "code"
-
-"image" must only be used for "text" screens
-
-Use the learners name in the content for personalization
+- Always include "screen_type"
+- "content" is required for all screen types
+- Use markdown-style code blocks (```python ... ```) in "content" if you are explaining code inside a "text" module
+- "question" should be true only for quizzes (mcq or short_answer)
+- "options" should only be included for "mcq", and must be a list of objects with option and is_correct keys
+- "code" must only be filled when screen_type is "code"; it provides optional starter code for the learner
+- "expected_output" must be provided only when screen_type is "code"; it represents what the correct code should print or return
+- Do not include any "image" fields in the output
+- Use the learner’s name in the content for personalization
 
 CRITICAL:
 
@@ -78,8 +73,13 @@ Example:
   "modules": [
     {{
       "screen_type": "text",
-      "content": "Hi, ready to dive into Python loops?",
-      "image": "a cartoon robot jumping into code",
+      "content": "Hi, ready to dive into Python loops, Alex?",
+      "question": false
+    }},
+    {{
+      "screen_type": "text",
+      "content": "Here's how a `for` loop works in Python. This will print numbers 0 to 4.",
+      "code":"\n\n```python\nfor i in range(5):\n    print(i)\n```\n",
       "question": false
     }},
     {{
@@ -95,7 +95,8 @@ Example:
     {{
       "screen_type": "code",
       "content": "Write a loop that prints numbers from 1 to 5.",
-      "code": "for i in range(1, 6):\\n    print(i)",
+      "code": "",
+      "expected_output": "1\\n2\\n3\\n4\\n5",
       "question": true
     }}
   ]
