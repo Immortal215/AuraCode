@@ -9,7 +9,7 @@ struct ContentView: View {
     @AppStorage("userImage") var userImage: String?
     @AppStorage("userType") var userType: String?
     @AppStorage("uid") var uid: String?
-
+    
     @State var showSignInView = true
     @State var showOnboarding = false
     var viewModel = AuthenticationViewModel()
@@ -27,7 +27,7 @@ struct ContentView: View {
                 } else {
                     HomeView(
                         code: $code,
-                        aura: aura,
+                        aura: $aura,
                         viewModel: viewModel,
                         showSignInView: $showSignInView
                     )

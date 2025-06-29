@@ -4,7 +4,7 @@ import FirebaseFirestore
 
 struct HomeView: View {
     @Binding var code: String
-    var aura: Int
+    @Binding var aura: Int
     var viewModel: AuthenticationViewModel
     @Binding var showSignInView: Bool
 
@@ -18,7 +18,7 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     SectionView(title: "My Learning Paths", subtitle: "Your learning paths") {
                         ForEach(pathViewModel.learningPaths) { path in
-                            NavigationLink(destination: LearningPathOverview(learningPath: path, viewModel: viewModel)) {
+                            NavigationLink(destination: LearningPathOverview(learningPath: path, viewModel: viewModel, aura: $aura)) {
                                 VStack(alignment: .leading, spacing: 8) {
                                     Text(path.name)
                                         .font(.headline)
@@ -51,7 +51,7 @@ struct HomeView: View {
                 }
             }
 
-            TopBarView(viewModel: viewModel, aura: aura) {
+            TopBarView(viewModel: viewModel, aura: $aura) {
                 viewModel.signOutUser {
                     showSignInView = true
                 }
