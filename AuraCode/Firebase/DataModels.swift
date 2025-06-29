@@ -15,7 +15,7 @@ struct Personal: Codable, Equatable, Hashable {
     var grade: String
 }
 
-struct LessonOverview: Codable {
+struct LessonOverview: Codable, Equatable, Hashable {
     var title: String
     var objective: String
     var key_concepts: [String]
@@ -23,15 +23,15 @@ struct LessonOverview: Codable {
     var estimated_time: Int
 }
 
-struct LearningPath: Identifiable, Codable {
-    var id: String? = nil 
+struct LearningPath: Identifiable, Codable, Equatable, Hashable {
+    var id: String? = nil
     var name: String
     var lessons: [LessonOverview]
 }
 
 class LearningPathViewModel: ObservableObject {
     @Published var learningPaths: [LearningPath] = []
-    private var listener: ListenerRegistration?
+    var listener: ListenerRegistration?
 
     func startListening(uid: String) {
         let db = Firestore.firestore()

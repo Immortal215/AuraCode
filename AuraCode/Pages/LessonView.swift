@@ -6,8 +6,8 @@ struct LessonView: View {
     let lessonIndex: Int
     let learningPathId: String
     
-    @State private var isLoading = true
-    @State private var errorMessage: String?
+    @State var isLoading = true
+    @State var errorMessage: String?
     
     var body: some View {
         GeometryReader { geo in

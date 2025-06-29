@@ -33,7 +33,6 @@ final class AuthenticationManager {
     }
 }
 
-// Sign in with SSO
 extension AuthenticationManager {
     
     @discardableResult
@@ -57,13 +56,11 @@ func sendAuthorizedRequest(
     guard let user = Auth.auth().currentUser else {
         throw NSError(domain: "AuthError", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])
     }
-
     let token = try await user.getIDToken()
     
-    guard let url = URL(string: "http://192.168.1.68:8000\(endpoint)") else {
-        throw URLError(.badURL)
-    }
-
+    guard let url = URL(string: "http://\(user.email == "keshavrshah@gmail.com" ? "192.168.1.68" : "localhost"):8000\(endpoint)") else {
+            throw URLError(.badURL)
+        }
     var request = URLRequest(url: url)
     request.httpMethod = method
     request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

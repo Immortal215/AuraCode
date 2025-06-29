@@ -33,7 +33,7 @@ struct HomeView: View {
                                 .cornerRadius(12)
                                 .shadow(radius: 2)
                             }
-                            .buttonStyle(PlainButtonStyle())  // Optional: removes default NavigationLink styling
+                            .buttonStyle(PlainButtonStyle())
                         }
                     }
 
@@ -87,7 +87,7 @@ struct HomeView: View {
 
                 Button("Generate Lesson Plan") {
                     Task {
-                        await submitLessonRequest()
+                        await createLearningPath()
                     }
                 }
                 .padding(.vertical)
@@ -98,28 +98,30 @@ struct HomeView: View {
         }
     }
 
-    func submitLessonRequest() async {
+    func createLearningPath() async {
         guard let user = viewModel.getCurrentUser() else {
             print("No user logged in")
             return
         }
 
         do {
-            let token = try await user.getIDToken()
-            guard let url = URL(string: "http://192.168.1.68:8000/create_learning_path") else {
-                print("Invalid URL")
+            
+            let body: [String: Any] = ["topic": topicInput]
+
+            let (data, response) = try await sendAuthorizedRequest(
+                endpoint:  "/create_learning_path",
+                body: body
+            )
+            
+            guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
+                print("Server Error")
                 return
             }
-
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-            let body: [String: Any] = ["topic": topicInput]
-            request.httpBody = try? JSONSerialization.data(withJSONObject: body)
-
-            let (_, response) = try await URLSession.shared.data(for: request)
+            
+            if let result = String(data: data, encoding: .utf8) {
+                code = result
+            }
+            
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
                 print("Lesson plan created successfully!")
                 topicInput = ""

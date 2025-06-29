@@ -57,10 +57,9 @@ struct ContentView: View {
                 showSignInView = false
             }
 
-            // ✅ Font logging here
-            for family in NSFontManager.shared.availableFontFamilies {
-                print("Family: \(family)")
-            }
+//            for family in NSFontManager.shared.availableFontFamilies {
+//                print("Family: \(family)")
+//            }
         }
     }
 }

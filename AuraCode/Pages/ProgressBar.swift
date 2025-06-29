@@ -42,7 +42,7 @@ struct ProgressBarView: View {
                             Text("Aura")
                             // .scaleEffect(progressBarSize == 1 ? 0 : 1)
                             //  .opacity(1)
-                                .transition(.scale(scale: 0, anchor: .center))
+                                .transition(.scale(scale: 0, anchor: .topLeading))
                                 .foregroundStyle(.white)
                         }
                     }
