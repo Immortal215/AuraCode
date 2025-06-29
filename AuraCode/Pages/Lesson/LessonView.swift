@@ -96,6 +96,8 @@ struct LessonView: View {
     let lessonIndex: Int
     let learningPathId: String
     var viewModel: AuthenticationViewModel
+    var learningPathDoc : LearningPath
+    
     @Binding var aura: Int
 
     @State var isLoading = true
@@ -300,7 +302,9 @@ struct LessonView: View {
                                                 .buttonStyle(PrimaryButtonStyle())
                                             } else {
                                                 Button("Next") {
-                                                    moveToNext()
+                                                    Task{
+                                                        await moveToNext()
+                                                    }
                                                 }
                                                 .buttonStyle(SecondaryButtonStyle())
                                             }
@@ -426,9 +430,48 @@ struct LessonView: View {
         }
     }
     
+
+    func markLessonAsCompleted() async {
+        guard let _ = viewModel.uid else {
+            print("User UID is nil.")
+            return
+        }
+
+        let body: [String: Any] = [
+            "learning_path_id": learningPathId,
+            "lesson_index": lessonIndex
+        ]
+
+        do {
+            let (_, response) = try await sendAuthorizedRequest(
+                endpoint: "/completed_lesson",
+                body: body
+            )
+
+            guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
+                print("Server error: \(response)")
+                return
+            }
+
+            print("Lesson completion sent successfully")
+            await MainActor.run {
+                if let window = NSApplication.shared.windows.first {
+                    window.contentView = NSHostingView(rootView: HomeView(
+                        code: $code,
+                        aura: $aura,
+                        viewModel: viewModel,
+                    ))
+                }
+            }
+        } catch {
+            print("Error sending lesson completion: \(error.localizedDescription)")
+        }
+    }
+
+
     func handleMCQSelection(optionIndex: Int, isCorrect: Bool) {
         selectedOptionIndex = optionIndex
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             if isCorrect && !completedModules.contains(currentIndex) {
                 completedModules.insert(currentIndex)
@@ -441,48 +484,61 @@ struct LessonView: View {
                 selectedOptionIndex = nil
                 return
             }
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                moveToNext()
+                Task {
+                    await moveToNext()
+                }
             }
         }
     }
-    
+
     func handleShortAnswer() {
         completedModules.insert(currentIndex)
         aura += 10
         showFeedbackToast(message: "Great answer! +10 aura", isCorrect: true)
-        
+
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            moveToNext()
-            shortAnswerText = ""
+            Task {
+                await moveToNext()
+                shortAnswerText = ""
+            }
         }
     }
-    
+
     func handleCodeSubmission(expectedOutput: String) {
         let trimmedOutput = output.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedExpected = expectedOutput.trimmingCharacters(in: .whitespacesAndNewlines)
-        
+
         if trimmedOutput == trimmedExpected {
             completedModules.insert(currentIndex)
             aura += 15
             showFeedbackToast(message: "Perfect! Code output matches! +15 aura", isCorrect: true)
-            
+
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                moveToNext()
+                Task {
+                    await moveToNext()
+                }
             }
         } else {
             showFeedbackToast(message: "Output doesn't match expected result. Try again!", isCorrect: false)
         }
     }
-    
+
     func handleTextModule() {
         if !completedModules.contains(currentIndex) {
             completedModules.insert(currentIndex)
             aura += 5
+
         }
-        moveToNext()
+        Task {
+            await moveToNext()
+        }
     }
+
+
     
     func showFeedbackToast(message: String, isCorrect: Bool) {
         feedbackMessage = message
@@ -545,14 +601,20 @@ struct LessonView: View {
         }
     }
 
-    func moveToNext() {
-        if let lessonData = lessonData, currentIndex + 1 < lessonData.modules.count {
-            currentIndex += 1
-            selectedOptionIndex = nil
-            code = lessonData.modules[currentIndex].code ?? code
+    func moveToNext() async {
+        if  let lessonData = lessonData {
+            if currentIndex + 1 < lessonData.modules.count {
+                currentIndex += 1
+                selectedOptionIndex = nil
+                code = lessonData.modules[currentIndex].code ?? code
+            }
+            else{
+                await markLessonAsCompleted()
+            }
         }
     }
 
+    
     func fetchLessonContent() async {
         isLoading = true
         errorMessage = nil

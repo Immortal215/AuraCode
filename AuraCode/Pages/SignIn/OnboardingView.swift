@@ -62,6 +62,6 @@ struct OnboardingView: View {
             }
             .padding(.bottom)
         }
-        .padding()
+        .padding(30)
     }
 }
