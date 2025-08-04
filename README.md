@@ -6,3 +6,5 @@
  Project Name: AuraCode 
  
  Description: An app that helps individuals learn how to code through questioning and problem-solving rather than copy and pasting Ai slop.
+
+CHECK OUT A DEMO HERE: https://www.youtube.com/watch?v=PvV3terAsKw
